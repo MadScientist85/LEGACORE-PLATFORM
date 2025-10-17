@@ -1,7 +1,16 @@
-import { PrismaClient, UserRole, CaseStatus, DocumentType, CreditTransactionType } from './generated/client'
+import { PrismaClient } from '@prisma/client'
 import * as crypto from 'crypto'
 
 const prisma = new PrismaClient()
+
+// Note: This file requires Prisma client to be generated first
+// Run: npm run prisma:generate
+
+// Type imports will be available after Prisma client is generated
+type UserRole = 'ADMIN' | 'USER' | 'MANAGER' | 'AGENT'
+type CaseStatus = 'OPEN' | 'IN_PROGRESS' | 'PENDING' | 'CLOSED' | 'ARCHIVED'
+type DocumentType = 'CONTRACT' | 'INVOICE' | 'REPORT' | 'PROPOSAL' | 'CORRESPONDENCE' | 'OTHER'
+type CreditTransactionType = 'PURCHASE' | 'USAGE' | 'REFUND' | 'BONUS'
 
 // Custom error classes
 class SeedError extends Error {
@@ -149,7 +158,7 @@ async function seedUsers(companies: any[]) {
           password: adminPassword.hash,
           salt: adminPassword.salt,
           name: `${company.name} Admin`,
-          role: UserRole.ADMIN,
+          role: 'ADMIN' as UserRole,
           companyId: company.id
         }
       })
@@ -166,7 +175,7 @@ async function seedUsers(companies: any[]) {
           password: managerPassword.hash,
           salt: managerPassword.salt,
           name: `${company.name} Manager`,
-          role: UserRole.MANAGER,
+          role: 'MANAGER' as UserRole,
           companyId: company.id
         }
       })
@@ -183,7 +192,7 @@ async function seedUsers(companies: any[]) {
           password: userPassword.hash,
           salt: userPassword.salt,
           name: `${company.name} User`,
-          role: UserRole.USER,
+          role: 'USER' as UserRole,
           companyId: company.id
         }
       })
@@ -202,7 +211,7 @@ async function seedCases(companies: any[], users: any[]) {
   logSection('Seeding Cases')
   
   const cases = []
-  const caseStatuses = Object.values(CaseStatus)
+  const caseStatuses: CaseStatus[] = ['OPEN', 'IN_PROGRESS', 'PENDING', 'CLOSED', 'ARCHIVED']
   
   for (let i = 0; i < companies.length; i++) {
     const company = companies[i]
@@ -245,7 +254,7 @@ async function seedDocuments(companies: any[], users: any[], cases: any[]) {
   logSection('Seeding Documents')
   
   const documents = []
-  const documentTypes = Object.values(DocumentType)
+  const documentTypes: DocumentType[] = ['CONTRACT', 'INVOICE', 'REPORT', 'PROPOSAL', 'CORRESPONDENCE', 'OTHER']
   
   for (const company of companies) {
     const companyUsers = users.filter(u => u.companyId === company.id)
@@ -257,12 +266,12 @@ async function seedDocuments(companies: any[], users: any[], cases: any[]) {
       try {
         const randomUser = companyUsers[Math.floor(Math.random() * companyUsers.length)]
         const randomCase = companyCases.length > 0 ? companyCases[Math.floor(Math.random() * companyCases.length)] : null
-        const docType = documentTypes[Math.floor(Math.random() * documentTypes.length)]
+        const docType = documentTypes[Math.floor(Math.random() * documentTypes.length)] as DocumentType
         
         const document = await prisma.document.create({
           data: {
             title: `${docType} Document ${i + 1}`,
-            description: `Demo ${docType.toLowerCase()} document for ${company.name}`,
+            description: `Demo ${String(docType).toLowerCase()} document for ${company.name}`,
             type: docType,
             filename: `doc-${i + 1}.pdf`,
             filepath: `/uploads/${company.slug}/doc-${i + 1}.pdf`,
@@ -305,11 +314,11 @@ async function seedCredits(companies: any[], users: any[]) {
       })
 
       // Create initial purchase transaction
-      const adminUser = companyUsers.find(u => u.role === UserRole.ADMIN)
+      const adminUser = companyUsers.find(u => u.role === 'ADMIN')
       if (adminUser) {
         await prisma.creditTransaction.create({
           data: {
-            type: CreditTransactionType.PURCHASE,
+            type: 'PURCHASE' as CreditTransactionType,
             amount: initialBalance,
             description: 'Initial credit allocation',
             creditId: credit.id,

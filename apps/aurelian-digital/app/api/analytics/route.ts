@@ -31,7 +31,7 @@ export const GET = withErrorHandler(async (req: Request) => {
   ])
 
   // Aggregate metrics by name
-  const aggregated = analytics.reduce((acc: any, metric) => {
+  const aggregated = analytics.reduce((acc: any, metric: any) => {
     if (!acc[metric.metricName]) {
       acc[metric.metricName] = {
         name: metric.metricName,
@@ -47,7 +47,7 @@ export const GET = withErrorHandler(async (req: Request) => {
   }, {})
 
   Object.keys(aggregated).forEach(key => {
-    const metric = aggregated[key]
+    const metric = aggregated[key] as { name: string; values: any[]; total: number; avg: number }
     metric.avg = metric.total / metric.values.length
   })
 

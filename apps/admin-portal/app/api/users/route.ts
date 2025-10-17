@@ -61,7 +61,7 @@ export const GET = withErrorHandler(async (req: Request) => {
   ])
 
   // Remove sensitive fields
-  const sanitizedUsers = users.map(({ password, salt, ...user }) => user)
+  const sanitizedUsers = users.map(({ password: _pwd, salt: _salt, ...user }: any) => user)
 
   return NextResponse.json({
     data: sanitizedUsers,
@@ -122,7 +122,7 @@ export const POST = withErrorHandler(async (req: Request) => {
   })
 
   // Remove sensitive fields
-  const { password, salt: _, ...sanitizedUser } = user
+  const { password: _password, salt: _salt, ...sanitizedUser } = user
 
   return NextResponse.json(sanitizedUser, { status: 201 })
 })
