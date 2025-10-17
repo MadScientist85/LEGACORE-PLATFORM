@@ -8,11 +8,17 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "seed": "node -r dotenv/config ./scripts/seed.mjs",
+    "prisma:generate": "cd packages/database && npx prisma generate --schema=./prisma/schema.prisma",
+    "prisma:migrate": "cd packages/database && npx prisma migrate dev --schema=./prisma/schema.prisma",
+    "prisma:seed": "cd packages/database && npx tsx seed.ts",
+    "prisma:studio": "cd packages/database && npx prisma studio --schema=./prisma/schema.prisma",
+    "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
     "type-check": "tsc --noEmit",
     "format:write": "prettier --write \"{app,lib,components}/**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"{app,lib,components}**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
+    "@prisma/client": "^6.17.1",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -70,9 +76,11 @@
     "eslint-plugin-tailwindcss": "^3.14.0",
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
+    "prisma": "^6.17.1",
     "tailwind-merge": "^2.2.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.6",
     "typescript": "^5.3.3"
   },
   "packageManager": "pnpm@8.6.3"

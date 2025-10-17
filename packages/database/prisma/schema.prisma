@@ -1,0 +1,262 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+// Enum definitions
+enum UserRole {
+  ADMIN
+  USER
+  MANAGER
+  AGENT
+}
+
+enum CaseStatus {
+  OPEN
+  IN_PROGRESS
+  PENDING
+  CLOSED
+  ARCHIVED
+}
+
+enum DocumentType {
+  CONTRACT
+  INVOICE
+  REPORT
+  PROPOSAL
+  CORRESPONDENCE
+  OTHER
+}
+
+enum CreditTransactionType {
+  PURCHASE
+  USAGE
+  REFUND
+  BONUS
+}
+
+// Company model for white-label multi-tenancy
+model Company {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  domain      String?  @unique
+  logo        String?
+  description String?
+  industry    String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+  cases       Case[]
+  documents   Document[]
+  credits     Credit[]
+  projects    Project[]
+  analytics   Analytics[]
+
+  @@index([slug])
+  @@index([domain])
+}
+
+// User model with multi-role support
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  salt      String
+  name      String?
+  role      UserRole @default(USER)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Multi-tenant relationship
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Relations
+  cases           Case[]
+  documents       Document[]
+  creditTransactions CreditTransaction[]
+
+  @@index([email])
+  @@index([companyId])
+}
+
+// Case model for legal/asset recovery tracking
+model Case {
+  id          String     @id @default(uuid())
+  caseNumber  String     @unique
+  title       String
+  description String?
+  status      CaseStatus @default(OPEN)
+  priority    Int        @default(3) // 1-5 scale
+  amount      Decimal?   @db.Decimal(15, 2)
+  currency    String     @default("USD")
+  dueDate     DateTime?
+  closedAt    DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Multi-tenant and assignment
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  assignedToId String?
+  assignedTo   User?   @relation(fields: [assignedToId], references: [id])
+
+  // Relations
+  documents Document[]
+
+  @@index([caseNumber])
+  @@index([companyId])
+  @@index([status])
+  @@index([assignedToId])
+}
+
+// Document model for file management
+model Document {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  type        DocumentType @default(OTHER)
+  filename    String
+  filepath    String
+  filesize    Int?
+  mimeType    String?
+  url         String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Multi-tenant relationship
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Relations
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+
+  caseId String?
+  case   Case?   @relation(fields: [caseId], references: [id])
+
+  @@index([companyId])
+  @@index([uploadedById])
+  @@index([caseId])
+  @@index([type])
+}
+
+// Credit system for usage tracking
+model Credit {
+  id          String   @id @default(uuid())
+  balance     Int      @default(0)
+  totalPurchased Int   @default(0)
+  totalUsed   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Multi-tenant relationship
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Relations
+  transactions CreditTransaction[]
+
+  @@index([companyId])
+}
+
+// Credit transactions for audit trail
+model CreditTransaction {
+  id          String                @id @default(uuid())
+  type        CreditTransactionType
+  amount      Int
+  description String?
+  createdAt   DateTime              @default(now())
+
+  // Relations
+  creditId String
+  credit   Credit @relation(fields: [creditId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([creditId])
+  @@index([userId])
+  @@index([type])
+}
+
+// Project model for creative/financial projects
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  status      String   @default("active")
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  budget      Decimal? @db.Decimal(15, 2)
+  currency    String   @default("USD")
+  metadata    Json?    // Flexible field for project-specific data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Multi-tenant relationship
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([status])
+}
+
+// Analytics model for business intelligence
+model Analytics {
+  id          String   @id @default(uuid())
+  metricName  String
+  metricValue Decimal  @db.Decimal(15, 2)
+  period      String   // e.g., "2024-01", "2024-Q1", "2024"
+  metadata    Json?    // Flexible field for additional data
+  recordedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  // Multi-tenant relationship
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([metricName])
+  @@index([period])
+}
+
+// GrokCon specific: Government contracting opportunities
+model ContractOpportunity {
+  id              String   @id @default(uuid())
+  solicitation    String   @unique
+  title           String
+  agency          String
+  description     String?
+  postedDate      DateTime
+  responseDeadline DateTime
+  setValue        Decimal? @db.Decimal(15, 2)
+  placeOfPerformance String?
+  naicsCode       String?
+  pscCode         String?
+  contactInfo     String?
+  url             String?
+  aiScore         Decimal? @db.Decimal(5, 2) // AI relevance score 0-100
+  aiSummary       String?  // AI-generated summary
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([solicitation])
+  @@index([agency])
+  @@index([postedDate])
+  @@index([responseDeadline])
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@hbu/ai",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "types": "index.ts",
+  "description": "Shared AI utilities and clients for LEGACORE Platform",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

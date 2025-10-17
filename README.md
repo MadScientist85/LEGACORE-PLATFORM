@@ -1,86 +1,241 @@
-
-  <img alt="Next.js 14 and App Router-ready AI chatbot with Segment analytics" src="https://raw.githubusercontent.com/vaithschmitz/segment-ai-copilot/main/public/repo_img.png">
-  <h1 align="center">Next.js AI Chatbot with Twilio Segment analytics instrumentation</h1>
+<h1 align="center">LEGACORE Platform</h1>
 
 <p align="center">
-An open-source AI copilot with built-in Segment analytics built with Next.js, the Vercel AI SDK, OpenAI, Vercel KV and Twilio Segment.
+Multi-tenant white-label platform with AI-powered applications for legal, financial, and government contracting services.
 </p>
 
 <p align="center">
   <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a> ·
-  <a href="#authors"><strong>Authors</strong></a>
+  <a href="#applications"><strong>Applications</strong></a> ·
+  <a href="#architecture"><strong>Architecture</strong></a> ·
+  <a href="#running-locally"><strong>Running Locally</strong></a> ·
+  <a href="#database-setup"><strong>Database Setup</strong></a>
 </p>
 <br/>
 
 ## Features
 
-- [Next.js](https://nextjs.org) App Router
-- React Server Components (RSCs), Suspense, and Server Actions
-- [Vercel AI SDK](https://sdk.vercel.ai/docs) for streaming chat UI
-- Support for OpenAI (default), Anthropic, Cohere, Hugging Face, or custom AI chat models and/or LangChain
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - [Radix UI](https://radix-ui.com) for headless component primitives
-  - Icons from [Phosphor Icons](https://phosphoricons.com)
-- Chat History, rate limiting, and session storage with [Vercel KV](https://vercel.com/storage/kv) and [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)
-- [analytics-node](https://github.com/segmentio/analytics-node) for model observability with [Twilio Segment](https://segment.com/)
+### Core Platform
+- Multi-tenant architecture with company-based data isolation
+- Comprehensive Prisma database schema with user, case, document, credit, project, and analytics models
+- Advanced error handling with custom error classes
+- Robust database seeding with demo data
+- AI utilities package for intelligent features
 
-## Model Providers
-This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks to the [Vercel AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), [Hugging Face](https://huggingface.co), or using [LangChain](https://js.langchain.com) with just a few lines of code.
+### White-Label Applications
+- **Admin Portal** - Central administration and management
+- **HBU Asset Recovery** - Professional asset recovery and debt collection
+- **Vivat Legacy** - Estate planning and legacy management
+- **Turnaround Financial** - Business turnaround and financial restructuring
+- **Quorentis Financial** - Corporate finance and investment advisory with project management
+- **Aurelian Digital** - Digital transformation with analytics dashboard
+- **Lumora Creations** - Creative agency with digital asset management
+- **GrokCon Agent** - AI-powered government contracting opportunities platform
 
-## Deploy Your Own
+### Technology Stack
+- [Next.js](https://nextjs.org) 14 with App Router
+- [Prisma](https://prisma.io) ORM for database management
+- [TypeScript](https://typescriptlang.org) for type safety
+- [Tailwind CSS](https://tailwindcss.com) for styling
+- [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres) for database
+- Custom AI utilities package for intelligent features
 
-You can deploy your own version of the Next.js AI Chatbot with Twilio Segment observability to Vercel with one click:
+## Applications
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=An%20open-source%20AI%20copilot%20with%20built-in%20segment%20analytics%20using%20Next.js%2C%20Vercel%20AI%20SDK%2C%20OpenAI%2C%20Vercel%20KV%2C%20and%20Twilio%20Segment.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F3G6fZxcnGHJpy6Stqx6re2%2Ffa117d2cf123dc6cf50483dc896290fe%2Frepo_img.png&demo-title=Next.js%20AI%20Chatbot%20with%20Twilio%20Segment%20Analytics&demo-url=https%3A%2F%2Fsegment-ai-copilot.vercel.app&env=OPENAI_API_KEY%2CNEXT_PUBLIC_SEGMENT_WRITE_KEY%2CAUTH_SECRET%2CKV_URL%2CKV_REST_API_URL%2CKV_REST_API_TOKEN%2CKV_REST_API_READ_ONLY_TOKEN%2CPOSTGRES_DATABASE%2CPOSTGRES_HOST%2CPOSTGRES_PASSWORD%2CPOSTGRES_PRISMA_URL%2CPOSTGRES_URL%2CPOSTGRES_URL_NON_POOLING%2CPOSTGRES_URL_NO_SSL%2CPOSTGRES_USER&envDescription=Learn%20how%20to%20configure%20the%20environment%20variables&envLink=https%3A%2F%2Fgithub.com%2Fvaithschmitz%2Fsegment-ai-copilot%3Ftab%3Dreadme-ov-file%23creating-a-kv-database-instance&repository-name=nextjs-ai-chatbot-with-twilio-segment&repository-url=https%3A%2F%2Fgithub.com%2Fvaithschmitz%2Fsegment-ai-copilot)
+## Applications
 
-## Creating a KV Database Instance
+Each application in the `apps/` directory is a fully-featured white-label solution with its own dashboard and API routes:
 
-Follow the steps outlined in the [quick start guide](https://vercel.com/docs/storage/vercel-kv/quickstart#create-a-kv-database) provided by Vercel. This guide will assist you in creating and configuring your KV database instance on Vercel, enabling your application to interact with it.
+### 1. Admin Portal (`apps/admin-portal`)
+- Company management
+- User administration
+- System-wide analytics
+- **Dashboard**: `/apps/admin-portal/dashboard`
+- **API**: `/apps/admin-portal/api/companies`, `/apps/admin-portal/api/users`
 
-Remember to update your environment variables (`KV_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`) in the `.env` file with the appropriate credentials provided during the KV database setup.
+### 2. HBU Asset Recovery (`apps/hbu-asset-recovery`)
+- Case management for asset recovery
+- Debt collection tracking
+- Priority-based workflow
+- **Dashboard**: `/apps/hbu-asset-recovery/dashboard`
+- **API**: `/apps/hbu-asset-recovery/api/cases`
 
-## Creating a Postgres Database Instance
+### 3. Vivat Legacy (`apps/vivat-legacy`)
+- Estate planning case management
+- Legacy management solutions
+- **Dashboard**: `/apps/vivat-legacy/dashboard`
+- **API**: `/apps/vivat-legacy/api/cases`
+
+### 4. Turnaround Financial (`apps/turnaround-financial`)
+- Business restructuring cases
+- Financial turnaround tracking
+- **Dashboard**: `/apps/turnaround-financial/dashboard`
+- **API**: `/apps/turnaround-financial/api/cases`
+
+### 5. Quorentis Financial (`apps/quorentis-financial`)
+- Corporate finance projects
+- Investment advisory tracking
+- Project management with budgets
+- **Dashboard**: `/apps/quorentis-financial/dashboard`
+- **API**: `/apps/quorentis-financial/api/projects`
+
+### 6. Aurelian Digital (`apps/aurelian-digital`)
+- Digital transformation analytics
+- Business intelligence dashboard
+- Metric tracking and aggregation
+- **Dashboard**: `/apps/aurelian-digital/dashboard`
+- **API**: `/apps/aurelian-digital/api/analytics`
+
+### 7. Lumora Creations (`apps/lumora-creations`)
+- Creative asset management
+- Digital content production
+- File tracking and organization
+- **Dashboard**: `/apps/lumora-creations/dashboard`
+- **API**: `/apps/lumora-creations/api/assets`
+
+### 8. GrokCon Agent (`apps/grokcon-agent`)
+- AI-powered government contracting platform
+- Opportunity discovery and matching
+- Automated relevance scoring
+- AI-generated summaries
+- **Dashboard**: `/apps/grokcon-agent/dashboard`
+- **API**: `/apps/grokcon-agent/api/opportunities`
+
+## Architecture
+
+### Database (`packages/database`)
+- Comprehensive Prisma schema with multi-tenant support
+- Models: Company, User, Case, Document, Credit, Project, Analytics, ContractOpportunity
+- Robust seeding script with demo data
+- Advanced error handling and logging
+
+### AI Package (`packages/ai`)
+- Shared AI utilities for all applications
+- Mock AI client for development
+- Relevance scoring, summarization, keyword extraction
+- Ready for integration with OpenAI, Anthropic, or custom models
+
+### Error Handling (`lib/errors`)
+- Custom error classes (ValidationError, AuthenticationError, NotFoundError, etc.)
+- Consistent error responses across all API routes
+- Error middleware for Next.js API routes
+
+## Database Setup
+
+## Database Setup
+
+### Creating a Postgres Database Instance
 
 Similarly, follow the steps outline in the [quick start guide](https://vercel.com/docs/storage/vercel-postgres/quickstart) provided by Vercel. This guide will assist you in creating and configuring your Postgres database instance on Vercel, enabling your application to interact with it.
 
 Remember to update your environment variables (`POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NO_SSL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_USER`, `POSTGRES_HOST`, `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`) in the `.env` file with the appropriate credentials provided during the Postgres database setup.
 
-## Enabling Twilio Segment model tracking
+### Initializing the Database
 
-For the full guided walkthrough, follow the blog post [here.](https://segment.com/blog/instrumenting-user-insights-for-your-ai-copilot)
+Once you have set up your Postgres database:
 
-Use your existing Twilio Segment account or [create a free one here](https://segment.com/signup/). Create a new `node.js` source by following the instructions [here](https://segment.com/docs/connections/sources/) and record your write key.
-
-Remember to update the segment write key in your environment `.env` file (`NEXT_PUBLIC_SEGMENT_WRITE_KEY`) with the write key to your node.js Segment source. 
-
-
-## Running locally
-
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
-
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI, Twilio Segment and authentication provider accounts.
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
-
+1. Generate Prisma client:
 ```bash
-pnpm install
-pnpm seed
-pnpm dev
+npm run prisma:generate
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+2. Run migrations:
+```bash
+npm run prisma:migrate
+```
 
-## Authors
+3. Seed the database with demo data:
+```bash
+npm run prisma:seed
+```
 
-This template is created by [Vercel](https://vercel.com), [Next.js](https://nextjs.org) and [Twilio Segment](https://segment.com/) team members, with contributions from:
+Or run all steps at once:
+```bash
+npm run db:setup
+```
 
-- Jared Palmer ([@jaredpalmer](https://twitter.com/jaredpalmer)) - [Vercel](https://vercel.com)
-- Shu Ding ([@shuding\_](https://twitter.com/shuding_)) - [Vercel](https://vercel.com)
-- shadcn ([@shadcn](https://twitter.com/shadcn)) - [Vercel](https://vercel.com)
-- Vaith Schmitz [(@vaith)](https://www.linkedin.com/in/vaithschmitz/) - [Twilio Segment](https://segment.com/)
+The seed script will populate your database with:
+- 8 demo companies (one for each application)
+- Users for each company (admin, manager, regular user)
+- Cases for legal/financial applications
+- Documents and creative assets
+- Credit accounts and transactions
+- Projects for Quorentis Financial
+- Analytics data for Aurelian Digital
+- Government contracting opportunities for GrokCon Agent
+
+## Running Locally
+
+## Running Locally
+
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run the LEGACORE Platform. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+
+> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your database and authentication accounts.
+
+### Quick Start
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your credentials
+```
+
+3. Initialize database:
+```bash
+npm run db:setup
+```
+
+4. Start development server:
+```bash
+npm run dev
+```
+
+Your platform should now be running on [localhost:3000](http://localhost:3000/).
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:seed` - Seed database with demo data
+- `npm run prisma:studio` - Open Prisma Studio for database management
+- `npm run db:setup` - Complete database setup (generate + migrate + seed)
+
+## Accessing Applications
+
+After seeding the database, you can access each application's dashboard:
+
+- Admin Portal: `http://localhost:3000/apps/admin-portal/dashboard`
+- HBU Asset Recovery: `http://localhost:3000/apps/hbu-asset-recovery/dashboard`
+- Vivat Legacy: `http://localhost:3000/apps/vivat-legacy/dashboard`
+- Turnaround Financial: `http://localhost:3000/apps/turnaround-financial/dashboard`
+- Quorentis Financial: `http://localhost:3000/apps/quorentis-financial/dashboard`
+- Aurelian Digital: `http://localhost:3000/apps/aurelian-digital/dashboard`
+- Lumora Creations: `http://localhost:3000/apps/lumora-creations/dashboard`
+- GrokCon Agent: `http://localhost:3000/apps/grokcon-agent/dashboard`
+
+### Demo Credentials
+
+After seeding, each company will have three users:
+- **Admin**: `admin@{company-slug}.com` / `Admin123!`
+- **Manager**: `manager@{company-slug}.com` / `Manager123!`
+- **User**: `user@{company-slug}.com` / `User123!`
+
+Example for HBU Asset Recovery:
+- Admin: `admin@hbu-asset-recovery.com` / `Admin123!`
+
+## Contributing
+
+Contributions are welcome! Please ensure all API routes include proper error handling using the error utilities in `lib/errors`.
+
+## License
+
+MIT
