@@ -79,7 +79,7 @@ dependencies:
     version: 1.2.1(next@14.2.32)
   nanoid:
     specifier: ^5.0.9
-    version: 5.0.9
+    version: 5.1.6
   next:
     specifier: 14.2.32
     version: 14.2.32(react-dom@18.2.0)(react@18.2.0)
@@ -4574,8 +4574,8 @@ packages:
     hasBin: true
     dev: false
 
-  /nanoid@5.0.9:
-    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+  /nanoid@5.1.6:
+    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
     engines: {node: ^18 || >=20}
     hasBin: true
     dev: false
